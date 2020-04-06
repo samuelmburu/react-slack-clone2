@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, createElement } from 'react';
 import { Grid, Form, Segment, Button, Header, Message, Icon } from 'semantic-ui-react'
 import { Link } from 'react-router-dom';
+import md5 from 'md5';
 
-import { firebase } from '../../firebase';
+import firebase, { database, analytics } from '../../firebase';
 
 const STRINGS = {
     FORM_EMPTY: 'Please fill out form completely',
@@ -16,7 +17,7 @@ function Register(props) {
     const [passwordConfirmation, setPasswordConfirmation] = useState('');
     const [errors, setErrors] = useState([]);
     const [loading, setLoading] = useState(false);
-    // let errors = [];
+    const usersRef = useRef(firebase.database().ref('users'));
 
     function isPasswordValid() {
         if (password.length < 6 || passwordConfirmation.length < 6) {
@@ -37,6 +38,8 @@ function Register(props) {
     }
 
     function isFormValid() {
+        // TODO: as the code stands only one error can ever be shown
+
         // clear out errors from previous validation check
         // setErrors([]);
         let error = {};
@@ -61,6 +64,34 @@ function Register(props) {
         }
     }
 
+    function updateUser(createdUser) {
+        return createdUser.user.updateProfile({
+            displayName: username,
+            photoURL: `http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`,
+        })
+            .then(() => {
+                setLoading(false);
+                // clear errors
+                setErrors([]);
+            })
+            .catch(err => {
+                setErrors([err]);
+                setLoading(false);
+            });
+    }
+
+    function saveUser(createdUser) {
+        console.log('user...', createdUser)
+        console.log(usersRef.current, createdUser.user.uid);
+
+        return usersRef.current.child(createdUser.user.uid).set({
+            name: createdUser.user.displayName,
+            avatar: createdUser.user.photoURL,
+        }).then((...p) => {
+            console.log('from inside of saveUser...', p)
+        });
+    }
+
     function handleSubmit(event) {
         event.preventDefault();
 
@@ -71,11 +102,25 @@ function Register(props) {
             firebase
                 .auth()
                 .createUserWithEmailAndPassword(email, password)
-                .then(createdUser => {
-                    setLoading(false);
+                .then(async createdUser => {
+                    console.log('the firebase', firebase);
+                    // usersRef.current = firebase.database().ref('users');
 
-                    // clear errors
-                    setErrors([]);
+                    updateUser(createdUser).then(() => {
+
+                        console.log('updatre finished...', createdUser.user)
+                        // let m = await saveUser(createdUser);
+
+                        usersRef.current.child(createdUser.user.uid).set({
+                            name: createdUser.user.displayName,
+                            avatar: createdUser.user.photoURL || 'poop',
+                        }).then((...foo) => {
+
+                            console.log('save happend', foo);
+                        }).catch(e => {
+                            console.error('the error from ', e)
+                        });
+                    })
                 })
                 .catch(err => {
                     setLoading(false);

@@ -1,8 +1,9 @@
-import * as firebase from 'firebase/app';
-import 'firebase/auth'
-import 'firebase/storage';
-import 'firebase/database';
-import 'firebase/analytics';
+// TODO: find out if this works without using the @firebase -- since those are not to be used 🤷‍♂
+import firebase from '@firebase/app';
+import '@firebase/auth'
+import '@firebase/storage';
+import '@firebase/database';
+import '@firebase/analytics';
 
 const firebaseConfig = {
     apiKey: 'AIzaSyAeY0E4FRD9kaGTTr_fEiJjigogN51gmaM',
@@ -18,7 +19,12 @@ const firebaseConfig = {
 console.log(firebase)
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+const poop = firebase.initializeApp(firebaseConfig);
 firebase.analytics();
+// const database = firebase.database();
+// const database = []
 
-export { firebase };
+console.log(poop)
+
+export default firebase;
+// export { database, analytics }
