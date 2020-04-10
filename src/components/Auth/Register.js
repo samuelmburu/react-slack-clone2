@@ -106,6 +106,8 @@ function Register(props) {
                     console.log('the firebase', firebase);
                     // usersRef.current = firebase.database().ref('users');
 
+                    // TODO: switch back to async/await for readability
+                    // TODO: also enable functions that are commented out
                     updateUser(createdUser).then(() => {
 
                         console.log('updatre finished...', createdUser.user)
