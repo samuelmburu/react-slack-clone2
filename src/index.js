@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter,Router, Switch, Route, withRouter } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, withRouter } from 'react-router-dom';
 
 import {createStore, compose } from 'redux';
-import {Provider} from 'react-redux';
+import {Provider, connect} from 'react-redux'; // connect
 
 import 'semantic-ui-css/semantic.min.css';
 
 import firebase from './firebase';
+import rootReducer from './reducers';
+import {setUser} from './actions';
+import {Spinner} from './components/Spinner';
 import { App } from './App';
 import { Login } from './components/Auth/Login';
 import { Register } from './components/Auth/Register';
@@ -31,18 +34,19 @@ if (process.env.NODE_ENV !== 'production' && typeof window === 'object') {
   /* eslint-enable */
 }
 
-const store = createStore(() => {}, {}, composeEnhancers());
+const store = createStore(rootReducer, {}, composeEnhancers());
 
-function Root({history}) {
+function Root({history, setUser, isLoading}) {
   useEffect(()=> {
     firebase.auth().onAuthStateChanged(user=> {
       if (user) {
+        setUser(user); // on the state
         history.push('/');
       }
     });
-  }, [history]);
+  }, [history, setUser, isLoading]);
 
-  return (
+  return isLoading? <Spinner /> : (
     <React.StrictMode>
       <Switch>
         <Route exact path="/" component={App} />
@@ -53,7 +57,18 @@ function Root({history}) {
   )
 }
 
-const RootWithAuthRouting = withRouter(Root);
+function mapStateToProps(state) {
+  return {
+    isLoading: state.user.isLoading,
+  };
+}
+
+const RootWithAuthRouting = withRouter(
+  connect(
+    mapStateToProps,
+    {setUser}
+  )(Root)
+);
 
 ReactDOM.render(
   <Provider store={store}>
