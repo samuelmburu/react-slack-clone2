@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route, withRouter } from 'react-router-dom';
-import {createStore, compose } from 'redux';
-import {Provider, connect} from 'react-redux';
+import { createStore, compose } from 'redux';
+import { Provider, connect } from 'react-redux';
 
 import 'semantic-ui-css/semantic.min.css';
 
 import firebase from './firebase';
 import rootReducer from './reducers';
-import {setUser, clearUser} from './actions';
-import {Spinner} from './components/Spinner';
+import { setUser, clearUser } from './actions';
+import { Spinner } from './components/Spinner';
 import { App } from './App';
 import { Login } from './components/Auth/Login';
 import { Register } from './components/Auth/Register';
@@ -35,9 +35,9 @@ if (process.env.NODE_ENV !== 'production' && typeof window === 'object') {
 
 const store = createStore(rootReducer, {}, composeEnhancers());
 
-function Root({history, setUser, clearUser, isLoading}) {
-  useEffect(()=> {
-    firebase.auth().onAuthStateChanged(user=> {
+function Root({ history, setUser, clearUser, isLoading }) {
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(user => {
       if (user) {
         setUser(user);
         history.push('/');
@@ -48,7 +48,9 @@ function Root({history, setUser, clearUser, isLoading}) {
     });
   }, [history, setUser, clearUser, isLoading]);
 
-  return isLoading? <Spinner /> : (
+  return isLoading ? (
+    <Spinner />
+  ) : (
     <React.StrictMode>
       <Switch>
         <Route exact path="/" component={App} />
@@ -56,7 +58,7 @@ function Root({history, setUser, clearUser, isLoading}) {
         <Route path="/register" component={Register} />
       </Switch>
     </React.StrictMode>
-  )
+  );
 }
 
 function mapStateToProps(state) {
@@ -65,18 +67,20 @@ function mapStateToProps(state) {
   };
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-      setUser: user => {dispatch(setUser(user))},
-      clearUser:() => {dispatch(clearUser())},
-    }
-  }
+const mapDispatchToProps = dispatch => ({
+  setUser: user => {
+    dispatch(setUser(user));
+  },
+  clearUser: () => {
+    dispatch(clearUser());
+  },
+});
 
 const RootWithAuthRouting = withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-  )(Root)
+  )(Root),
 );
 
 ReactDOM.render(
@@ -84,8 +88,9 @@ ReactDOM.render(
     <BrowserRouter>
       <RootWithAuthRouting />
     </BrowserRouter>
-  </Provider>
-, document.getElementById('root'));
+  </Provider>,
+  document.getElementById('root'),
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

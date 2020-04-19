@@ -1,13 +1,13 @@
-import * as React from 'react'
+import * as React from 'react';
 
-import { Loader, Dimmer } from  'semantic-ui-react';
+import { Loader, Dimmer } from 'semantic-ui-react';
 
 function Spinner() {
-    return (
+  return (
     <Dimmer inverted active blurring page>
-        <Loader active size="huge" content='Loading...' />
+      <Loader active size="huge" content="Loading..." />
     </Dimmer>
-    );
+  );
 }
 
-export {Spinner};
+export { Spinner };
