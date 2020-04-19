@@ -3,7 +3,7 @@ import { Grid, Form, Segment, Button, Header, Message, Icon } from 'semantic-ui-
 import { Link } from 'react-router-dom';
 import md5 from 'md5';
 
-import firebase, { database, analytics } from '../../firebase';
+import firebase from '../../firebase';
 
 const STRINGS = {
     FORM_EMPTY: 'Please fill out form completely',
@@ -80,6 +80,8 @@ function Register(props) {
             });
     }
 
+    // TODO: 
+    // eslint-disable-next-line no-unused-vars
     function saveUser(createdUser) {
         console.log('user...', createdUser)
         console.log(usersRef.current, createdUser.user.uid);
