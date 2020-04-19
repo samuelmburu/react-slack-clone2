@@ -1,15 +1,14 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route, withRouter } from 'react-router-dom';
-
 import {createStore, compose } from 'redux';
-import {Provider, connect} from 'react-redux'; // connect
+import {Provider, connect} from 'react-redux';
 
 import 'semantic-ui-css/semantic.min.css';
 
 import firebase from './firebase';
 import rootReducer from './reducers';
-import {setUser} from './actions';
+import {setUser, clearUser} from './actions';
 import {Spinner} from './components/Spinner';
 import { App } from './App';
 import { Login } from './components/Auth/Login';
@@ -36,15 +35,18 @@ if (process.env.NODE_ENV !== 'production' && typeof window === 'object') {
 
 const store = createStore(rootReducer, {}, composeEnhancers());
 
-function Root({history, setUser, isLoading}) {
+function Root({history, setUser, clearUser, isLoading}) {
   useEffect(()=> {
     firebase.auth().onAuthStateChanged(user=> {
       if (user) {
-        setUser(user); // on the state
+        setUser(user);
         history.push('/');
+      } else {
+        history.push('/login');
+        clearUser(); // TODO: figure out why this is getting called twice
       }
     });
-  }, [history, setUser, isLoading]);
+  }, [history, setUser, clearUser, isLoading]);
 
   return isLoading? <Spinner /> : (
     <React.StrictMode>
@@ -63,10 +65,17 @@ function mapStateToProps(state) {
   };
 }
 
+const mapDispatchToProps = dispatch => {
+    return {
+      setUser: user => {dispatch(setUser(user))},
+      clearUser:() => {dispatch(clearUser())},
+    }
+  }
+
 const RootWithAuthRouting = withRouter(
   connect(
     mapStateToProps,
-    {setUser}
+    mapDispatchToProps,
   )(Root)
 );
 

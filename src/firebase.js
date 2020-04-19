@@ -21,10 +21,7 @@ console.log(firebase)
 // Initialize Firebase
 const poop = firebase.initializeApp(firebaseConfig);
 firebase.analytics();
-// const database = firebase.database();
-// const database = []
 
 console.log(poop)
 
 export default firebase;
-// export { database, analytics }

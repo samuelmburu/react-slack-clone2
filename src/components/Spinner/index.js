@@ -4,7 +4,7 @@ import { Loader, Dimmer } from  'semantic-ui-react';
 
 function Spinner() {
     return (
-    <Dimmer inverted active blurring={true} page>
+    <Dimmer inverted active blurring page>
         <Loader active size="huge" content='Loading...' />
     </Dimmer>
     );

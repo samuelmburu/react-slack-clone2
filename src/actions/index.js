@@ -8,3 +8,9 @@ export function setUser(user) {
         }
     };
 }
+
+export function clearUser() {
+    return {
+        type: actionTypes.CLEAR_USER,
+    }
+}
