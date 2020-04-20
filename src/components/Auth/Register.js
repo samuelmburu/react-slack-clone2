@@ -61,7 +61,6 @@ function Register() {
       // throw error
       error = { message: STRINGS.FORM_EMPTY };
       setErrors([...currentErrors, error]);
-      console.error('please fill out the form');
 
       return false;
     }
@@ -69,7 +68,6 @@ function Register() {
       // throw error
       error = { message: STRINGS.PASSWORD_INVALID };
       setErrors([...currentErrors, error]);
-      console.error('password and passwordConfirmation do not match');
 
       return false;
     }
@@ -132,6 +130,7 @@ function Register() {
             console.log('updatre finished...', createdUser.user);
             // let m = await saveUser(createdUser);
 
+            // TODO: switch this to the saveUser function above
             usersRef.current
               .child(createdUser.user.uid)
               .set({

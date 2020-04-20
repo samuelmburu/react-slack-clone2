@@ -10,10 +10,12 @@ const StyledMenu = styled(Menu)`
   fontsize: 1.2rem;
 `;
 
-function SidePanel() {
+function SidePanel(props) {
+  const { currentUser } = props;
+
   return (
     <StyledMenu size="large" inverted fixed="left" vertical>
-      <UserPanel />
+      <UserPanel currentUser={currentUser} />
     </StyledMenu>
   );
 }

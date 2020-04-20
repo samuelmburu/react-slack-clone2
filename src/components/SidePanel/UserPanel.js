@@ -7,6 +7,7 @@ import {
   HeaderContent,
   Icon,
   Dropdown,
+  Image,
 } from 'semantic-ui-react';
 import styled from 'styled-components';
 
@@ -21,14 +22,16 @@ const StyledGridRow = styled(GridRow)`
   margin: 0;
 `;
 
-function UserPanel() {
+function UserPanel(props) {
+  const { currentUser } = props;
+
   function dropdownOptions() {
     return [
       {
         key: 'user',
         text: (
           <span>
-            Signed in as <strong>User</strong>
+            Signed in as <strong>{currentUser.displayName}</strong>
           </span>
         ),
         disabled: true,
@@ -45,27 +48,38 @@ function UserPanel() {
   }
 
   function handleSignout() {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => console.log('signed out!!'));
+    firebase.auth().signOut();
   }
 
   return (
     <StyledGrid>
       <GridColumn>
+        {/* App Header */}
         <StyledGridRow>
-          {/* App Header */}
           <Header inverted floated="left" as="h2">
             <Icon name="code" />
             <HeaderContent>DevChat</HeaderContent>
           </Header>
-        </StyledGridRow>
 
-        {/* User dropdown */}
-        <Header>
-          <Dropdown trigger={<span>User</span>} options={dropdownOptions()} />
-        </Header>
+          {/* User dropdown */}
+          <Header>
+            <Dropdown
+              trigger={
+                <span>
+                  <Image
+                    src={currentUser.photoURL}
+                    spaced="right"
+                    avatar
+                    verticalAlign="middle"
+                    size="mini"
+                  />
+                  {currentUser.displayName}
+                </span>
+              }
+              options={dropdownOptions()}
+            />
+          </Header>
+        </StyledGridRow>
       </GridColumn>
     </StyledGrid>
   );

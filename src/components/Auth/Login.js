@@ -44,6 +44,15 @@ function Login() {
       console.log('form is valid Yo!!!');
 
       // do sign in validation here....
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(user => {
+          console.log(`user signed in --${user}`);
+        })
+        .catch(e => {
+          console.error(`there was an error: ${e}`);
+        });
     }
   }
 
