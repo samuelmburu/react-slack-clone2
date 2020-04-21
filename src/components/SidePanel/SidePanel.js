@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import * as constants from '../../constants';
 import { UserPanel } from './UserPanel';
+import { Channels } from './Channels';
 
 const StyledMenu = styled(Menu)`
   background: ${constants.DEFAULT_BACKGROUND}; // FIXME: background getting overridden probably issue with how styledComponents are rendering this
@@ -16,6 +17,7 @@ function SidePanel(props) {
   return (
     <StyledMenu size="large" inverted fixed="left" vertical>
       <UserPanel currentUser={currentUser} />
+      <Channels />
     </StyledMenu>
   );
 }
